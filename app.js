@@ -18,12 +18,36 @@
 // });
 
 
-const http = require("http");
+// const http = require("http");
 
-const server = http.createServer((req, res)=>{
-    res.setHeader("Content-type", "text/html");
-    res.write(`<script src='/script.js'></script>`);
-    res.end();
+// const server = http.createServer((req, res)=>{
+//     res.setHeader("Content-type", "text/html");
+//     res.write(`<script src='/script.js'></script>`);
+//     res.end();
+// })
+
+// server.listen(3000);
+
+
+// Routing Urls
+
+
+const http = require("http");
+const form = `<form method="POST" action="/message"><input type="text" name='message'><input type='submit' value='Click Me!'></form>`
+
+const server = http.createServer((req, res) => {
+    res.setHeader("Content-type", 'text/html');
+
+    if (req.url === "/") {
+        res.write(form);
+        return res.end()
+    }
+
+    if (req.url === '/message') {
+        res.write("Welcome back to the Server!.");
+        return res.end();
+    }
 })
+
 
 server.listen(3000);
