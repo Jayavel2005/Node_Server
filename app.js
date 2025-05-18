@@ -56,6 +56,8 @@
 
 const http = require("http");
 const fs = require("fs");
+const { log } = require("console");
+const { parse } = require("path");
 
 const server = http.createServer((req, res) => {
 
@@ -66,13 +68,26 @@ const server = http.createServer((req, res) => {
         res.setHeader("Content-type", "text/html");
         res.write(`<form action='/message' method='POST'>
             <input type='text' name='message'>
+            
             <input type='submit' value='Submit!' > 
             </form>`)
         return res.end()
-    } 
+    }
 
     if (url === '/message' && method === 'POST') {
-        fs.writeFileSync("HELLO.txt", "I am Dummy!");
+        const body = [];
+        req.on('data', (chunk) => {
+            body.push(chunk);
+
+        });
+
+        req.on('end', () => {
+            const parseBody = Buffer.concat(body).toString();
+            const message = parseBody.split("=");
+            fs.writeFileSync("hello.txt", message[1]);
+            fs.writeFileSync("HELLO.txt", "I am Dummy!");
+
+        })
         res.setHeader("Location", "/");
         res.statusCode = '302';
         return res.end();
