@@ -32,22 +32,59 @@
 // Routing Urls
 
 
+// const http = require("http");
+// const form = `<form method="POST" action="/message"><input type="text" name='message'><input type='submit' value='Click Me!'></form>`
+
+// const server = http.createServer((req, res) => {
+//     res.setHeader("Content-type", 'text/html');
+
+//     if (req.url === "/") {
+//         res.write(form);
+//         return res.end()
+//     }
+
+//     if (req.url ===  '/message') {
+//         res.write("Welcome back to the Server!.");
+//         return res.end();
+//     }
+// })
+
+
+// server.listen(3000);
+
+// Redirecting Requests
+
 const http = require("http");
-const form = `<form method="POST" action="/message"><input type="text" name='message'><input type='submit' value='Click Me!'></form>`
+const fs = require("fs");
 
 const server = http.createServer((req, res) => {
-    res.setHeader("Content-type", 'text/html');
 
-    if (req.url === "/") {
-        res.write(form);
+    const url = req.url;
+    const method = req.method;
+
+    if (url === "/") {
+        res.setHeader("Content-type", "text/html");
+        res.write(`<form action='/message' method='POST'>
+            <input type='text' name='message'>
+            <input type='submit' value='Submit!' > 
+            </form>`)
         return res.end()
+    } 
+
+    if (url === '/message' && method === 'POST') {
+        fs.writeFileSync("HELLO.txt", "I am Dummy!");
+        res.setHeader("Location", "/");
+        res.statusCode = '302';
+        return res.end();
+
     }
 
-    if (req.url === '/message') {
-        res.write("Welcome back to the Server!.");
-        return res.end();
-    }
+
+    res.write("Welcome back to the Server!.");
+    return res.end();
+
 })
 
-
-server.listen(3000);
+server.listen(3000, () => {
+    console.log("Server is running http://localhost:3000");
+})
